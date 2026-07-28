@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Bryant GPRS Pro 專業成長股研究系統">
+  <title>Bryant GPRS Pro</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <style>
+    :root{
+      --bg:#f4f7fb;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;
+      --nav:#0f172a;--accent:#2563eb;--accent2:#dbeafe;--ok:#047857;--warn:#b45309;
+      --bad:#b91c1c;--radius:20px;--shadow:0 10px 30px rgba(15,23,42,.07);
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif}
+    header{position:sticky;top:0;z-index:20;background:rgba(15,23,42,.97);color:#fff;padding:16px 16px 12px;backdrop-filter:blur(10px)}
+    header .wrap{max-width:1100px;margin:auto;display:flex;justify-content:space-between;gap:12px;align-items:center}
+    header h1{font-size:20px;margin:0} header p{font-size:12px;color:#cbd5e1;margin:4px 0 0}
+    .status{font-size:11px;padding:6px 9px;border-radius:999px;background:#1e293b;color:#bfdbfe}
+    main{max-width:1100px;margin:auto;padding:14px 14px 100px}
+    nav{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+    nav button{border:0;border-radius:13px;background:#e2e8f0;color:#0f172a;padding:11px 6px;font-size:12px;font-weight:800}
+    nav button.active{background:var(--nav);color:#fff}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:17px;margin:12px 0;box-shadow:var(--shadow)}
+    h2{font-size:18px;margin:0 0 12px} h3{font-size:15px;margin:18px 0 8px}
+    label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
+    input,select,textarea{width:100%;border:1px solid var(--line);border-radius:13px;padding:12px;background:#fff;color:var(--text);font-size:16px}
+    textarea{min-height:92px;resize:vertical}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+    button,.btn{cursor:pointer;border:0;border-radius:13px;padding:11px 14px;font-weight:800}
+    .primary{background:var(--nav);color:#fff}.secondary{background:#e2e8f0;color:#0f172a}.blue{background:var(--accent);color:#fff}.danger{background:#fee2e2;color:#991b1b}
+    .metric{border:1px solid var(--line);border-radius:15px;padding:13px;background:#fff}
+    .metric span{font-size:12px;color:var(--muted)} .metric b{display:block;font-size:22px;margin-top:5px}
+    .score{font-size:50px;font-weight:900;line-height:1}.grade{display:inline-block;background:#0f172a;color:#fff;border-radius:999px;padding:6px 10px;font-weight:900;margin-top:8px}
+    .hidden{display:none!important}.muted{color:var(--muted)}.small{font-size:12px;line-height:1.6}
+    table{width:100%;border-collapse:collapse;font-size:13px;min-width:620px}
+    th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+    th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:#fff}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+    .watch{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+    .pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#e2e8f0;font-size:12px}
+    .section-title{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .progress{height:9px;border-radius:99px;background:#e2e8f0;overflow:hidden}.progress>i{display:block;height:100%;background:#2563eb;width:0}
+    details{border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;background:#fff}
+    summary{font-weight:800;cursor:pointer}
+    footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));z-index:30}
+    footer .wrap{max-width:1100px;margin:auto;display:flex;gap:8px}.install{width:100%;background:#0f172a;color:#fff}
+    @media(max-width:760px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}nav{grid-template-columns:repeat(5,1fr)}}
+    @media(max-width:520px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}header .status{display:none}.score{font-size:42px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div><h1>Bryant GPRS Pro</h1><p>專業成長股研究系統 V3.5</p></div>
+    <span class="status" id="apiStatus">官方公開資料｜免費版</span>
+  </div>
+</header>
+
+<main>
+  <nav>
+    <button class="active" data-tab="dashboard">首頁</button>
+    <button data-tab="research">研究</button>
+    <button data-tab="compare">比較</button>
+    <button data-tab="watchlist">自選</button>
+    <button data-tab="data">資料</button>
+  </nav>
+
+  <section id="dashboard" class="tab">
+    <div class="card">
+      <div class="section-title"><div><h2>研究儀表板</h2><div class="muted small">以一致框架追蹤財務、成長、競爭力與估值。</div></div><button class="blue" onclick="newResearch()">新增研究</button></div>
+      <div class="g4" style="margin-top:14px">
+        <div class="metric"><span>已研究公司</span><b id="dashCount">0</b></div>
+        <div class="metric"><span>平均 GPRS 分數</span><b id="dashAvg">—</b></div>
+        <div class="metric"><span>A 級以上</span><b id="dashA">0</b></div>
+        <div class="metric"><span>最近更新</span><b id="dashUpdated" style="font-size:16px">—</b></div>
+      </div>
+    </div>
+    <div class="card"><h2>最近研究</h2><div id="recentList"></div></div>
+    <div class="card">
+      <h2>正式版 16 模組</h2>
+      <div class="g2 small">
+        <div>1. 公司基本資料<br>2. 5–7 年損益表<br>3. 資產負債表<br>4. 現金流量表<br>5. 12 季分析<br>6. 24 月營收<br>7. 法說會<br>8. 重大訊息</div>
+        <div>9. 競爭力<br>10. 三情境估值<br>11. 法人分析<br>12. 股權分析<br>13. 三年預估<br>14. 投資論點<br>15. 100 分評分<br>16. AI 結論欄位</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="research" class="tab hidden">
+    <div class="card">
+      <h2>1. 公司基本資料</h2>
+      <div class="g4">
+        <div><label>股票代號</label><input id="ticker" placeholder="3563"></div>
+        <div><label>公司名稱</label><input id="company" placeholder="牧德"></div>
+        <div><label>產業</label><input id="industry" placeholder="半導體設備"></div>
+        <div><label>目前股價</label><input id="price" type="number" step="0.01"></div>
+      </div>
+      <div class="actions">
+        <button class="blue" id="fetchBtn" onclick="fetchOfficialData()">輸入代號後自動抓資料</button>
+        <span class="muted small" id="fetchMessage">支援上市與上櫃；資料依官方發布頻率更新。</span>
+      </div>
+      <div class="g4" style="margin-top:10px">
+        <div><label>市場別</label><input id="market" readonly></div>
+        <div><label>本益比</label><input id="peNow" readonly></div>
+        <div><label>殖利率 %</label><input id="yieldNow" readonly></div>
+        <div><label>股價淨值比</label><input id="pbNow" readonly></div>
+      </div>
+      <div class="g4" style="margin-top:10px">
+        <div><label>最新月營收</label><input id="latestRevenue" readonly></div>
+        <div><label>月增率 %</label><input id="momRevenue" readonly></div>
+        <div><label>年增率 %</label><input id="yoyRevenue" readonly></div>
+        <div><label>資料更新日</label><input id="officialUpdated" readonly></div>
+      </div>
+      <div class="g2" style="margin-top:10px">
+        <div><label>商業模式／產品結構</label><textarea id="business"></textarea></div>
+        <div><label>主要客戶／競爭對手</label><textarea id="customers"></textarea></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2–6. 財報與營收核心指標</h2>
+      <div class="g4">
+        <div><label>5 年營收 CAGR %</label><input id="revCagr" type="number" step="0.1"></div>
+        <div><label>5 年 EPS CAGR %</label><input id="epsCagr" type="number" step="0.1"></div>
+        <div><label>近 12 月營收 YoY %</label><input id="ttmYoY" type="number" step="0.1"></div>
+        <div><label>最新 ROE %</label><input id="roe" type="number" step="0.1"></div>
+        <div><label>最新 ROIC %</label><input id="roic" type="number" step="0.1"></div>
+        <div><label>毛利率 %</label><input id="gm" type="number" step="0.1"></div>
+        <div><label>營益率 %</label><input id="om" type="number" step="0.1"></div>
+        <div><label>負債比 %</label><input id="debtRatio" type="number" step="0.1"></div>
+        <div><label>營業現金流品質 0–10</label><input id="ocf" type="number" min="0" max="10"></div>
+        <div><label>自由現金流品質 0–10</label><input id="fcf" type="number" min="0" max="10"></div>
+        <div><label>合約負債趨勢 0–10</label><input id="contract" type="number" min="0" max="10"></div>
+        <div><label>存貨／應收品質 0–10</label><input id="working" type="number" min="0" max="10"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>7–9. 法說、重大訊息與競爭力</h2>
+      <div class="g3">
+        <div><label>產業成長性 0–10</label><input id="industryGrowth" type="number" min="0" max="10"></div>
+        <div><label>技術／護城河 0–10</label><input id="moat" type="number" min="0" max="10"></div>
+        <div><label>客戶黏著度 0–10</label><input id="stickiness" type="number" min="0" max="10"></div>
+        <div><label>管理層可信度 0–10</label><input id="management" type="number" min="0" max="10"></div>
+        <div><label>法說承諾兌現 0–10</label><input id="guidance" type="number" min="0" max="10"></div>
+        <div><label>估值吸引力 0–10</label><input id="valuationScore" type="number" min="0" max="10"></div>
+      </div>
+      <div class="g2" style="margin-top:10px">
+        <div><label>法說會重點</label><textarea id="conference"></textarea></div>
+        <div><label>重大訊息／擴產／認證</label><textarea id="material"></textarea></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>10 & 13. 三年預估與三情境估值</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>年度</th><th>營收</th><th>EPS</th><th>毛利率</th><th>主要成長來源</th></tr></thead>
+          <tbody>
+            <tr><td>第 1 年</td><td><input id="y1Revenue"></td><td><input id="y1Eps" type="number" step="0.01"></td><td><input id="y1Gm"></td><td><input id="y1Driver"></td></tr>
+            <tr><td>第 2 年</td><td><input id="y2Revenue"></td><td><input id="y2Eps" type="number" step="0.01"></td><td><input id="y2Gm"></td><td><input id="y2Driver"></td></tr>
+            <tr><td>第 3 年</td><td><input id="y3Revenue"></td><td><input id="y3Eps" type="number" step="0.01"></td><td><input id="y3Gm"></td><td><input id="y3Driver"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="g3" style="margin-top:12px">
+        <div><label>保守 EPS</label><input id="epsBear" type="number" step="0.01"></div>
+        <div><label>中性 EPS</label><input id="epsBase" type="number" step="0.01"></div>
+        <div><label>樂觀 EPS</label><input id="epsBull" type="number" step="0.01"></div>
+        <div><label>保守 PE</label><input id="peBear" type="number" step="0.1"></div>
+        <div><label>中性 PE</label><input id="peBase" type="number" step="0.1"></div>
+        <div><label>樂觀 PE</label><input id="peBull" type="number" step="0.1"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>11–12. 法人與股權</h2>
+      <div class="g2">
+        <div><label>法人籌碼觀察</label><textarea id="institutional"></textarea></div>
+        <div><label>董監／大股東／增資／可轉債</label><textarea id="ownership"></textarea></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>14 & 16. 投資論點與最終結論</h2>
+      <label>市場目前交易什麼？</label><textarea id="marketPricing"></textarea>
+      <div class="g2">
+        <div><label>真正成長來源</label><textarea id="growthDrivers"></textarea></div>
+        <div><label>驗證指標</label><textarea id="verification"></textarea></div>
+        <div><label>風險與失效條件</label><textarea id="risks"></textarea></div>
+        <div><label>AI／研究者最終結論</label><textarea id="conclusion"></textarea></div>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="calculate()">計算評分</button>
+        <button class="blue" onclick="saveCompany()">儲存研究</button>
+        <button class="secondary" onclick="loadSample()">載入牧德範例</button>
+        <button class="secondary" onclick="newResearch()">清空表單</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>15. GPRS 評分結果</h2>
+      <div class="g2">
+        <div><div class="muted">總分</div><div class="score" id="totalScore">—</div><span class="grade" id="grade">尚未評分</span></div>
+        <div class="g2">
+          <div class="metric"><span>保守合理價</span><b id="bearPrice">—</b></div>
+          <div class="metric"><span>中性合理價</span><b id="basePrice">—</b></div>
+          <div class="metric"><span>樂觀合理價</span><b id="bullPrice">—</b></div>
+          <div class="metric"><span>現價位置</span><b id="pricePosition">—</b></div>
+        </div>
+      </div>
+      <h3>分項</h3>
+      <div class="g2">
+        <div><div class="small">財務品質 <span id="sfText"></span></div><div class="progress"><i id="sfBar"></i></div></div>
+        <div><div class="small">成長性 <span id="sgText"></span></div><div class="progress"><i id="sgBar"></i></div></div>
+        <div><div class="small">競爭力 <span id="smText"></span></div><div class="progress"><i id="smBar"></i></div></div>
+        <div><div class="small">管理層 <span id="smanText"></span></div><div class="progress"><i id="smanBar"></i></div></div>
+        <div><div class="small">估值 <span id="svText"></span></div><div class="progress"><i id="svBar"></i></div></div>
+      </div>
+      <p class="muted small">本系統僅供研究紀錄，不構成投資建議。正式投資決策應核對公司公告、財報與法說會來源。</p>
+    </div>
+  </section>
+
+  <section id="compare" class="tab hidden"><div class="card"><h2>同業比較</h2><div id="compareTable"></div></div></section>
+  <section id="watchlist" class="tab hidden"><div class="card"><h2>自選研究清單</h2><div id="watchList"></div></div></section>
+  <section id="data" class="tab hidden">
+    <div class="card">
+      <h2>資料管理</h2>
+      <p class="muted small">免費版使用手機瀏覽器本機儲存，不會自動同步到其他裝置。</p>
+      <div class="actions">
+        <button class="secondary" onclick="exportData()">匯出備份</button>
+        <label class="btn secondary">匯入備份<input id="importFile" type="file" accept=".json" hidden></label>
+        <button class="danger" onclick="clearAll()">清除全部</button>
+      </div>
+      <details><summary>未來免費升級方向</summary><p class="small muted">可加入手動貼入月營收、季報數據、法說摘要及 CSV 匯入。完全自動抓取財報、股價與 AI 分析通常需要後端服務或 API。</p></details>
+    </div>
+    <div class="card"><h2>安裝說明</h2><p class="small">Android：Chrome 開啟網址後，使用「安裝應用程式」或「加到主畫面」。<br>iPhone：Safari 開啟網址，點分享後選「加入主畫面」。</p></div>
+  </section>
+</main>
+
+<footer><div class="wrap"><button id="installBtn" class="install hidden">安裝到手機桌面</button></div></footer>
+<script src="./app.js"></script>
+</body>
+</html>
