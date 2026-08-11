@@ -1,6 +1,6 @@
 {
-  "name": "Bryant GPRS Pro V3.5 專業成長股研究系統",
-  "short_name": "GPRS 3.5",
+  "name": "Bryant GPRS Pro V4.1 Historical Loader",
+  "short_name": "GPRS V4.1",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

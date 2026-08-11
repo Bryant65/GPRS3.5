@@ -28,78 +28,13 @@ function calculate(){
   return r;
 }
 
-const API={twse:'https://openapi.twse.com.tw/v1',tpex:'https://www.tpex.org.tw/openapi/v1'};
-const cleanNum=v=>{if(v==null)return '';const s=String(v).replace(/,/g,'').replace(/%/g,'').trim();if(['','--','---','N/A','-'].includes(s))return '';const x=Number(s);return Number.isFinite(x)?x:''};
-const pick=(o,names)=>{for(const k of names)if(o&&o[k]!=null&&String(o[k]).trim()!=='')return o[k];return ''};
-async function getJSON(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()}
-function findTicker(rows,t){return rows.find(x=>String(pick(x,['Code','SecuritiesCompanyCode','公司代號','股票代號','SecuritiesCode'])).trim()===t)}
-async function fetchListed(t){
- const [q,v,c,r,i,b]=await Promise.all([
-  getJSON(`${API.twse}/exchangeReport/STOCK_DAY_ALL`),
-  getJSON(`${API.twse}/exchangeReport/BWIBBU_ALL`),
-  getJSON(`${API.twse}/opendata/t187ap03_L`),
-  getJSON(`${API.twse}/opendata/t187ap05_L`),
-  getJSON(`${API.twse}/opendata/t187ap06_L_ci`).catch(()=>[]),
-  getJSON(`${API.twse}/opendata/t187ap07_L_ci`).catch(()=>[])
- ]);
- const row=findTicker(q,t);return row?{market:'上市',q:row,v:findTicker(v,t),c:findTicker(c,t),r:findTicker(r,t),i:findTicker(i,t),b:findTicker(b,t)}:null
-}
-async function fetchOtc(t){
- const [q,v,c,r,i,b]=await Promise.all([
-  getJSON(`${API.tpex}/tpex_mainboard_quotes`),
-  getJSON(`${API.tpex}/tpex_mainboard_peratio_analysis`),
-  getJSON(`${API.tpex}/mopsfin_t187ap03_O`).catch(()=>[]),
-  getJSON(`${API.tpex}/mopsfin_t187ap05_O`).catch(()=>[]),
-  getJSON(`${API.tpex}/mopsfin_t187ap06_O_ci`).catch(()=>[]),
-  getJSON(`${API.tpex}/mopsfin_t187ap07_O_ci`).catch(()=>[])
- ]);
- const row=findTicker(q,t);return row?{market:'上櫃',q:row,v:findTicker(v,t),c:findTicker(c,t),r:findTicker(r,t),i:findTicker(i,t),b:findTicker(b,t)}:null
-}
-function setIf(id,val,overwrite=true){if(val===''||val==null)return;if(overwrite||!$(id).value)$(id).value=val}
-function parseFinancials(d){
- const i=d.i||{},b=d.b||{};
- const rev=cleanNum(pick(i,['Revenue','營業收入','營業收入合計','收益']));
- const gross=cleanNum(pick(i,['GrossProfit','營業毛利（毛損）','營業毛利（毛損）淨額','營業毛利']));
- const op=cleanNum(pick(i,['OperatingIncome','營業利益（損失）','營業利益']));
- const eps=cleanNum(pick(i,['BasicEarningsPerShare','基本每股盈餘（元）','基本每股盈餘']));
- const eq=cleanNum(pick(b,['Equity','權益總額','權益總計']));
- const assets=cleanNum(pick(b,['Assets','資產總額','資產總計']));
- const liab=cleanNum(pick(b,['Liabilities','負債總額','負債總計']));
- const net=cleanNum(pick(i,['ProfitLoss','本期淨利（淨損）','本期淨利','稅後淨利']));
- if(rev&&gross!=='')setIf('gm',(gross/rev*100).toFixed(1),false);
- if(rev&&op!=='')setIf('om',(op/rev*100).toFixed(1),false);
- if(assets&&liab!=='')setIf('debtRatio',(liab/assets*100).toFixed(1),false);
- if(eq&&net!=='')setIf('roe',(net/eq*100).toFixed(1),false);
- if(eps!==''){setIf('y1Eps',eps,false);setIf('epsBase',eps,false)}
-}
-async function fetchOfficialData(){
- const t=$('ticker').value.trim();
- if(!/^\d{4,6}$/.test(t)){alert('請輸入股票代號，例如 3563');return}
- $('fetchBtn').disabled=true;$('fetchMessage').textContent='正在讀取官方公開資料…';
- try{
-  let d=await fetchListed(t).catch(()=>null);if(!d)d=await fetchOtc(t).catch(()=>null);
-  if(!d)throw new Error('查無上市或上櫃資料');
-  const q=d.q||{},v=d.v||{},c=d.c||{},r=d.r||{};
-  setIf('market',d.market);
-  setIf('company',pick(q,['Name','CompanyName','SecuritiesCompanyName','證券名稱'])||pick(c,['公司簡稱','公司名稱','CompanyName']));
-  setIf('industry',pick(c,['產業別','產業類別','Industry']));
-  setIf('price',cleanNum(pick(q,['ClosingPrice','Close','收盤價','ClosePrice'])));
-  setIf('peNow',cleanNum(pick(v,['PEratio','P/E','本益比','PERatio'])));
-  setIf('yieldNow',cleanNum(pick(v,['DividendYield','殖利率(%)','殖利率','Yield'])));
-  setIf('pbNow',cleanNum(pick(v,['PBratio','股價淨值比','PBRatio'])));
-  setIf('latestRevenue',pick(r,['當月營收','CurrentMonthRevenue','本月','營業收入-當月營收']));
-  setIf('momRevenue',cleanNum(pick(r,['上月比較增減(%)','MoM','月增率','營業收入-上月比較增減(%)'])));
-  const yoy=cleanNum(pick(r,['去年同月增減(%)','YoY','年增率','營業收入-去年同月增減(%)']));
-  setIf('yoyRevenue',yoy);setIf('ttmYoY',yoy,false);
-  setIf('officialUpdated',new Date().toLocaleString('zh-TW'));
-  parseFinancials(d);calculate();
-  $('fetchMessage').textContent=`完成：${d.market}資料已填入；缺少欄位可手動補充。`;
-  $('apiStatus').textContent='官方資料已更新';
- }catch(e){
-  $('fetchMessage').textContent='抓取失敗，可稍後重試或手動輸入。';
-  alert(`無法取得資料：${e.message}`);
- }finally{$('fetchBtn').disabled=false}
-}
+let GPRS_DATA_CACHE=null;
+const cleanNum=v=>{if(v===null||v===undefined)return '';const s=String(v).replace(/,/g,'').replace(/%/g,'').trim();if(['','--','---','N/A','-'].includes(s))return '';const x=Number(s);return Number.isFinite(x)?x:''};
+const pick=(o,names)=>{for(const k of names){if(o&&o[k]!==undefined&&o[k]!==null&&String(o[k]).trim()!=='')return o[k]}return ''};
+function setIf(id,val,overwrite=true){if(val===''||val===null||val===undefined||!$(id))return;if(overwrite||!$(id).value)$(id).value=val}
+async function loadFundamentalDB(force=false){if(GPRS_DATA_CACHE&&!force)return GPRS_DATA_CACHE;const r=await fetch('./data/fundamentals.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('fundamentals.json 尚未建立');GPRS_DATA_CACHE=await r.json();return GPRS_DATA_CACHE}
+function parseFinancials(d){const i=d.income||{},b=d.balance||{};const revenue=cleanNum(pick(i,['營業收入','營業收入合計','Revenue','收益']));const gross=cleanNum(pick(i,['營業毛利（毛損）','營業毛利（毛損）淨額','營業毛利','GrossProfit']));const op=cleanNum(pick(i,['營業利益（損失）','營業利益','OperatingIncome']));const eps=cleanNum(pick(i,['基本每股盈餘（元）','基本每股盈餘','BasicEarningsPerShare']));const equity=cleanNum(pick(b,['權益總額','權益總計','Equity']));const assets=cleanNum(pick(b,['資產總額','資產總計','Assets']));const liabilities=cleanNum(pick(b,['負債總額','負債總計','Liabilities']));const net=cleanNum(pick(i,['本期淨利（淨損）','本期淨利','稅後淨利','ProfitLoss']));if(revenue&&gross!=='')setIf('gm',(gross/revenue*100).toFixed(1),false);if(revenue&&op!=='')setIf('om',(op/revenue*100).toFixed(1),false);if(assets&&liabilities!=='')setIf('debtRatio',(liabilities/assets*100).toFixed(1),false);if(equity&&net!=='')setIf('roe',(net/equity*100).toFixed(1),false);if(eps!==''){setIf('y1Eps',eps,false);setIf('epsBase',eps,false)}}
+async function fetchOfficialData(){const ticker=$('ticker').value.trim();if(!/^\d{4,6}$/.test(ticker)){alert('請輸入股票代號，例如 3563');return}$('fetchBtn').disabled=true;$('fetchMessage').textContent='正在讀取 GPRS 官方資料庫…';try{const db=await loadFundamentalDB(true);const d=db.companies?.[ticker];if(!d)throw new Error('資料庫目前查無此代號；請先執行 GitHub Actions 更新');const q=d.quote||{},v=d.valuation||{},c=d.company||{},r=d.revenue||{};setIf('market',d.market);setIf('company',pick(q,['Name','證券名稱'])||pick(c,['公司簡稱','公司名稱','CompanyName']));setIf('industry',pick(c,['產業別','產業類別','Industry']));setIf('price',cleanNum(pick(q,['ClosingPrice','收盤價','Close','ClosePrice'])));setIf('peNow',cleanNum(pick(v,['PEratio','本益比','P/E','PERatio'])));setIf('yieldNow',cleanNum(pick(v,['DividendYield','殖利率(%)','殖利率','Yield'])));setIf('pbNow',cleanNum(pick(v,['PBratio','股價淨值比','PBRatio'])));setIf('latestRevenue',pick(r,['當月營收','營業收入-當月營收','CurrentMonthRevenue']));setIf('momRevenue',cleanNum(pick(r,['上月比較增減(%)','營業收入-上月比較增減(%)','MoM','月增率'])));const yoy=cleanNum(pick(r,['去年同月增減(%)','營業收入-去年同月增減(%)','YoY','年增率']));setIf('yoyRevenue',yoy);setIf('ttmYoY',yoy,false);setIf('officialUpdated',db.meta?.updated_at_taipei||'');parseFinancials(d);calculate();$('fetchMessage').textContent=`完成：${d.market}官方基本面資料已填入。`;if($('apiStatus'))$('apiStatus').textContent='V4 官方資料橋接'}catch(e){$('fetchMessage').textContent='尚未取得資料。請先在 GitHub Actions 執行一次更新。';alert(e.message)}finally{$('fetchBtn').disabled=false}}
 
 function loadAll(){return JSON.parse(localStorage.getItem('bryant_gprs_v3')||'{}')}
 function storeAll(x){localStorage.setItem('bryant_gprs_v3',JSON.stringify(x));renderAll()}
@@ -132,3 +67,21 @@ let deferredPrompt;addEventListener('beforeinstallprompt',e=>{e.preventDefault()
 $('installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('installBtn').classList.add('hidden')};
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js');
 renderAll();calculate();
+
+
+async function loadHistoryCoverage(){
+  try{
+    const r=await fetch('./data/history/index.json?ts='+Date.now(),{cache:'no-store'});
+    if(!r.ok)throw new Error();
+    const x=await r.json();
+    if($('histMonths'))$('histMonths').textContent=x.monthly_count??0;
+    if($('histQuarters'))$('histQuarters').textContent=x.quarterly_count??0;
+    if($('hist24'))$('hist24').textContent=(x.monthly_count>=24?'完整':'累積中');
+    if($('hist12q'))$('hist12q').textContent=(x.quarterly_count>=12?'完整':'累積中');
+  }catch(e){
+    if($('histMonths'))$('histMonths').textContent='尚未建立';
+    if($('histQuarters'))$('histQuarters').textContent='尚未建立';
+  }
+}
+
+loadHistoryCoverage();
