@@ -1,0 +1,20 @@
+{
+  "version": "4.1",
+  "edition": "Fundamental Historical",
+  "updated_at_taipei": "2026-08-11T21:05:55.272196+08:00",
+  "company_count": 2269,
+  "sources": {
+    "twse_company": "https://openapi.twse.com.tw/v1/opendata/t187ap03_L",
+    "twse_revenue": "https://openapi.twse.com.tw/v1/opendata/t187ap05_L",
+    "twse_income_ci": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_ci",
+    "twse_balance_ci": "https://openapi.twse.com.tw/v1/opendata/t187ap07_L_ci",
+    "twse_valuation": "https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL",
+    "twse_quote": "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL",
+    "tpex_company": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap03_O",
+    "tpex_revenue": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap05_O",
+    "tpex_income_ci": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci",
+    "tpex_balance_ci": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_O_ci"
+  },
+  "errors": {},
+  "note": "Official public snapshots; historical series accumulates over time."
+}
