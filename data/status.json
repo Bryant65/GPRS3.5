@@ -1,8 +1,8 @@
 {
   "version": "4.1",
   "edition": "Fundamental Historical",
-  "updated_at_taipei": "2026-09-12T00:44:04.262567+08:00",
-  "company_count": 2275,
+  "updated_at_taipei": "2026-09-12T23:47:44.400494+08:00",
+  "company_count": 0,
   "sources": {
     "twse_company": "https://openapi.twse.com.tw/v1/opendata/t187ap03_L",
     "twse_revenue": "https://openapi.twse.com.tw/v1/opendata/t187ap05_L",
@@ -15,6 +15,17 @@
     "tpex_income_ci": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci",
     "tpex_balance_ci": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_O_ci"
   },
-  "errors": {},
+  "errors": {
+    "twse_company": "Expecting value: line 1 column 1 (char 0)",
+    "twse_revenue": "Expecting value: line 1 column 1 (char 0)",
+    "twse_income_ci": "<urlopen error timed out>",
+    "twse_balance_ci": "Expecting value: line 1 column 1 (char 0)",
+    "twse_valuation": "Expecting value: line 1 column 1 (char 0)",
+    "twse_quote": "<urlopen error timed out>",
+    "tpex_company": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)>",
+    "tpex_revenue": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)>",
+    "tpex_income_ci": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)>",
+    "tpex_balance_ci": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)>"
+  },
   "note": "Official public snapshots; historical series accumulates over time."
 }
