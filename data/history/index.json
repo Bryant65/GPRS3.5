@@ -6,8 +6,9 @@
   ],
   "quarterly_periods": [
     "2026-Q2",
-    "2026-Q3"
+    "2026-Q3",
+    "2026-Q4"
   ],
   "monthly_count": 3,
-  "quarterly_count": 2
+  "quarterly_count": 3
 }
