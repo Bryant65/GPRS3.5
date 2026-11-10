@@ -1,8 +1,8 @@
 {
   "version": "4.1",
   "edition": "Fundamental Historical",
-  "updated_at_taipei": "2026-11-10T06:40:04.511089+08:00",
-  "company_count": 1391,
+  "updated_at_taipei": "2026-11-11T03:58:38.172629+08:00",
+  "company_count": 2288,
   "sources": {
     "twse_company": "https://openapi.twse.com.tw/v1/opendata/t187ap03_L",
     "twse_revenue": "https://openapi.twse.com.tw/v1/opendata/t187ap05_L",
@@ -15,11 +15,6 @@
     "tpex_income_ci": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci",
     "tpex_balance_ci": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_O_ci"
   },
-  "errors": {
-    "tpex_company": "HTTP Error 403: Forbidden",
-    "tpex_revenue": "HTTP Error 403: Forbidden",
-    "tpex_income_ci": "HTTP Error 403: Forbidden",
-    "tpex_balance_ci": "HTTP Error 403: Forbidden"
-  },
+  "errors": {},
   "note": "Official public snapshots; historical series accumulates over time."
 }
