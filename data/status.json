@@ -1,7 +1,7 @@
 {
   "version": "4.1",
   "edition": "Fundamental Historical",
-  "updated_at_taipei": "2026-11-19T04:51:50.487786+08:00",
+  "updated_at_taipei": "2026-11-20T04:56:24.819113+08:00",
   "company_count": 2291,
   "sources": {
     "twse_company": "https://openapi.twse.com.tw/v1/opendata/t187ap03_L",
